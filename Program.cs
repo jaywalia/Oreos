@@ -8,12 +8,20 @@ namespace Oreos
     {
         static void Main(string[] args)
         {
+            int start = 1;
+            int stop = 1000 * 1000; // million
+            int d = 11;
             Console.WriteLine("Cookie monster looking for Oreos!");
             int found = 0;
-            for (int i = 1; i < 1000000; i++)
+            for (int i = start; i <= stop; i++)
             {
-                if (i % 11 == 0)
+                if (i % d == 0) 
                 {
+                    if( IsOreo(i.ToString()))
+                    {
+                        Console.WriteLine($"{i} <<<<<<<<<<<<<<<<<<<<<<<< Found Oreo. Yummy!!!");
+                        found++;
+                    }
                     // if( IsPalindrome(i.ToString()))
                     // {
                     //      Console.WriteLine($"{i} <<<<<<<<<<<<<<<<<<<<<<<< Found Palindrome!!!");
@@ -22,14 +30,34 @@ namespace Oreos
                     // {
                     //     Console.WriteLine($"{i} <<<<<<<<<<<<<<<<<<<<<<<< Found isXYYYX!!!");
                     // }
-                    if( IsOreo(i.ToString()))
-                    {
-                        Console.WriteLine($"{i} <<<<<<<<<<<<<<<<<<<<<<<< Found Oreo. Yummy!!!");
-                        found++;
-                    }
                 }
             }
             Console.WriteLine($"Found {found} oreos!!!");
+        }
+        // xyx, xyyx, xyyyx, and so on
+        static bool IsOreo(string s)
+        {
+            bool isOreo = false;
+            
+            char[] oreo = s.ToCharArray();
+            
+            // check cookies
+            char leftCookie = oreo[0]; // cookie on left
+            char rightCookie = oreo[oreo.Length -1]; // cookie on right
+            bool sameCookies = leftCookie == rightCookie;
+
+            // check filling
+            bool smoothFilling = false;
+            char[] filling = oreo.Skip(1).Take(oreo.Length - 2).ToArray();
+            // every layer of filling needs to be same as first layer of filling
+            smoothFilling = filling.Count() > 0  // filling exists
+                            && filling[0] != leftCookie // filling is not made of cookies
+                            && filling[0] != rightCookie // this check is redundant
+                            && filling.All(f => f == filling[0]); // filling is consistent
+
+            isOreo = sameCookies && smoothFilling;
+
+            return isOreo ;
         }
 
         static bool IsXYYYX(int i)
@@ -76,30 +104,5 @@ namespace Oreos
             return s.SequenceEqual(s.Reverse());
         }
 
-        // xyx, xyyx, xyyyx, and so on
-        static bool IsOreo(string s)
-        {
-            bool isOreo = false;
-            
-            char[] oreo = s.ToCharArray();
-            
-            // check cookies
-            char leftCookie = oreo[0]; // cookie on left
-            char rightCookie = oreo[oreo.Length -1]; // cookie on right
-            bool sameCookies = leftCookie == rightCookie;
-
-            // check filling
-            bool smoothFilling = false;
-            char[] filling = oreo.Skip(1).Take(oreo.Length - 2).ToArray();
-            // every layer of filling needs to be same as first layer of filling
-            smoothFilling = filling.Count() > 0  // filling exists
-                            && filling[0] != leftCookie // filling is not made of cookies
-                            && filling[0] != rightCookie // this check is redundant
-                            && filling.All(f => f == filling[0]); // filling is consistent
-
-            isOreo = sameCookies && smoothFilling;
-
-            return isOreo ;
-        }
     }
 }
